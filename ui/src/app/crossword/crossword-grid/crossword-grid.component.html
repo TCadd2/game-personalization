@@ -1,0 +1,21 @@
+<div class="crossword-grid">
+    <div *ngFor="let row of grid; let rowIndex = index">
+      <div *ngFor="let cell of row; let colIndex = index" 
+           [ngClass]="{
+             'cell': true,
+             'incorrect': cell.isIncorrect,
+             'unused': !cell.editable
+           }">
+        <input *ngIf="cell.editable"
+               type="text"
+               maxlength="1"
+               [(ngModel)]="cell.letter"
+               (input)="onInput($event, rowIndex, colIndex)"
+               [ngClass]="{ 'editable': cell.editable }"/>
+        <div *ngIf="!cell.editable" class="cell-content">
+          {{ cell.letter }}
+        </div>
+      </div>
+    </div>
+  </div>
+  

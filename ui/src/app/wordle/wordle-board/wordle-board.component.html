@@ -1,0 +1,34 @@
+<!-- Navbar -->
+<div class="navbar">
+    <h1>Wordle</h1>
+  </div>
+  
+  <!-- Main Content Container -->
+  <div class="main-content">
+    <div class="container">
+      <!-- Game Grid -->
+      <div class="wordle-grid">
+        <div class="row" *ngFor="let guess of guesses; let i = index">
+          <div class="cell" 
+               *ngFor="let letter of guess; let j = index"
+               [ngClass]="{'correct': colors[i][j] === 'green', 
+                           'incorrect': colors[i][j] === 'grey',
+                           'partial': colors[i][j] === 'yellow'}">
+            {{ letter }}
+          </div>
+        </div>
+      </div>
+  
+      <!-- Input box and button -->
+      <input [(ngModel)]="currentGuess" (keyup.enter)="submitGuess()" maxlength="5" />
+      <button (click)="submitGuess()">Enter</button>
+  
+      <!-- Feedback messages -->
+      <p *ngIf="gameWon">Congratulations, you've won!</p>
+      <p *ngIf="gameLost">Game Over. The correct word was: {{ correctWord }}</p>
+  
+      <!-- Restart Button -->
+      <button *ngIf="gameWon || gameLost" (click)="resetGame()">Restart Game</button>
+    </div>
+  </div>
+  

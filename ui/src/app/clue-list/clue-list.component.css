@@ -1,0 +1,13 @@
+.clue-list {
+    padding: 10px;
+  }
+  
+  .clue-list ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .clue-list li {
+    margin-bottom: 5px;
+  }
+  

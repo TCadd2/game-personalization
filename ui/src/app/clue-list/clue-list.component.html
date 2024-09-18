@@ -1,0 +1,16 @@
+<div class="clue-list">
+    <h3>Across</h3>
+    <ul>
+      <li *ngFor="let clue of acrossClues">
+        {{ clue.number }}: {{ clue.clue }} (Starts at {{ clue.startRow + 1 }}, {{ clue.startCol + 1 }}, Length: {{ clue.length }})
+      </li>
+    </ul>
+  
+    <h3>Down</h3>
+    <ul>
+      <li *ngFor="let clue of downClues">
+        {{ clue.number }}: {{ clue.clue }} (Starts at {{ clue.startRow + 1 }}, {{ clue.startCol + 1 }}, Length: {{ clue.length }})
+      </li>
+    </ul>
+  </div>
+  
