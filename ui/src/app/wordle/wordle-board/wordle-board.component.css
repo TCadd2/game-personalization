@@ -1,68 +1,49 @@
-/* Import Modern Font at the Top of Your CSS */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-/* General Styles for the Body and Container */
-html, body {
-  height: 100%; /* Ensure the body takes up the full viewport height */
-  margin: 0; /* Remove default margin */
+/* General Styles */
+.page-container, .main-content {
   display: flex;
-  flex-direction: column; /* Stack navbar and main content vertically */
+  flex-direction: column;
   align-items: center;
-  background-color: #f5f5f5; /* Light background for a clean look */
-  font-family: 'Poppins', sans-serif; /* Modern font for general text */
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  min-height: 100vh; /* Ensures full screen coverage */
+  margin: 0;
+  justify-content: flex-start;
 }
 
-/* Navbar Styles */
+/* Navbar */
 .navbar {
-    width: 100%; /* Full width of the viewport */
-    background: #1e1e1e; /* Dark modern background color */
-    color: #ffffff; /* White text color */
-    text-align: center; /* Center align text in the navbar */
-    padding: 20px 0; /* Vertical padding for the navbar */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-    z-index: 1000; /* Ensure navbar is on top of other elements */
-    border-bottom-left-radius: 20px; /* Rounded bottom-left corner */
-    border-bottom-right-radius: 20px; /* Rounded bottom-right corner */
-  }
-/* Navbar Title Styling */
-.navbar h1 {
-  margin: 0; /* Remove default margin */
-  font-size: 2.5rem; /* Larger font size for the title */
-  color: #ffffff; /* White text color */
-  font-weight: 600; /* Semi-bold font weight for emphasis */
-  letter-spacing: 1px; /* Slight letter spacing for a modern look */
-  font-family: 'Poppins', sans-serif; /* Consistent modern font */
+  width: 100%;
+  background-color: #2d2d2d;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px 0; /* Reduced padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #333;
 }
 
-/* Main Content Container Styles */
+.navbar h1 {
+  margin: 0;
+  font-size: 1.8rem; /* Slightly smaller font size */
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Main Content */
 .main-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex: 1; /* Take up remaining space */
-  padding-top: 40px; /* Space below the navbar to ensure content isn't hidden */
+  flex: 1;
+  padding-top: 100px; /* Reduced padding */
+  width: 100%;
+  height: 100%;
 }
 
-/* Container Styles for Game Content */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center; /* Center align text in the container */
-  gap: 20px; /* Space between elements */
-  background-color: #ffffff; /* White background for the container */
-  border-radius: 10px; /* Rounded corners for a softer look */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  padding: 20px; /* Padding inside the container */
-}
-
-/* Grid and Cell Styles */
+/* Wordle Grid */
 .wordle-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  gap: 5px;
 }
 
 .row {
@@ -71,69 +52,90 @@ html, body {
 }
 
 .cell {
-  width: 50px; /* Slightly larger cells for better visibility */
+  width: 50px; /* Adjusted size */
   height: 50px;
-  font-size: 1.8rem; /* Larger font size for modern look */
-  font-family: 'Poppins', sans-serif; /* Modern font for cell text */
-  font-weight: 600; /* Bold font weight for emphasis */
+  font-size: 1.5rem; /* Adjusted font size */
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
   text-transform: uppercase;
   text-align: center;
-  border: 1px solid #ddd; /* Light border for subtle separation */
-  border-radius: 8px; /* Rounded corners for cells */
-  background-color: #e0e0e0; /* Neutral background color */
-  color: #333; /* Darker text color */
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: default; /* Default cursor */
-  pointer-events: none; /* Prevent mouse interactions */
+  border: 2px solid #3a3a3c;
+  background-color: #f5f6fa; /* Updated background color */
+  color: #333;
+  transition: background-color 0.3s, color 0.3s;
 }
 
+/* Correct letter and position (Green) */
 .cell.correct {
-  background-color: #4caf50; /* Green background for correct letters */
+  background-color: #538d4e;
+  border-color: #538d4e;
   color: white;
 }
 
+/* Correct letter, wrong position (Yellow) */
 .cell.partial {
-  background-color: #ffeb3b; /* Yellow background for partially correct letters */
-  color: black;
-}
-
-.cell.incorrect {
-  background-color: #9e9e9e; /* Grey background for incorrect letters */
+  background-color: #b59f3b;
+  border-color: #b59f3b;
   color: white;
 }
 
-/* Input and Button Styles */
-input, button {
-  font-size: 1rem; /* Consistent font size */
-  padding: 10px 20px; /* Padding for buttons and input */
-  border: 2px solid #ddd; /* Light border */
-  border-radius: 8px; /* Rounded corners */
-  background-color: #ffffff; /* White background */
-  color: #333; /* Dark text color */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
-  transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
-  font-family: 'Poppins', sans-serif; /* Consistent modern font */
+/* Incorrect letter (Grey) */
+.cell.incorrect {
+  background-color: #3a3a3c;
+  border-color: #3a3a3c;
+  color: white;
 }
 
-input:focus, button:hover {
-  background-color: #f0f0f0; /* Light grey background on focus/hover */
-  border-color: #aaa; /* Darker border color on focus/hover */
+/* Modernized Input Box and Button */
+input {
+  width: 250px; /* Smaller width */
+  height: 20px; /* Reduced height */
+  font-size: 1rem; /* Smaller font */
+  padding: 8px; /* Adjusted padding */
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px; /* Less space between grid and input */
+  background-color: #f0f0f0;
+  color: #333;
+  text-align: center;
+  transition: box-shadow 0.3s, background-color 0.3s;
+}
+
+input:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 button {
-  cursor: pointer; /* Pointer cursor for button */
+  width: 80px; /* Reduced width */
+  height: 40px; /* Reduced height */
+  font-size: 1rem;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3a3a3c;
+  color: white;
+  margin-top: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  background-color: #5a5a5c;
 }
 
 button:active {
-  background-color: #e0e0e0; /* Slightly darker background when button is clicked */
+  background-color: #7a7a7c;
 }
 
-/* Instructions Text */
-.instructions {
-  font-size: 1rem;
-  color: #666; /* Slightly lighter text color for instructions */
-  margin-bottom: 15px; /* Space between instructions and grid */
-  font-family: 'Poppins', sans-serif; /* Consistent modern font */
+/* Messages */
+p {
+  font-size: 1.1rem;
+  color: #333;
 }
+

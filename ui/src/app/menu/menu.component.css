@@ -1,12 +1,94 @@
-.menu {
-    text-align: center;
-    margin-top: 50px;
-  }
-  
-  .menu button {
-    font-size: 20px;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-  }
-  
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #e0e0e0; /* Soft grey background for a pleasant feel */
+}
+
+/* Navbar */
+.navbar {
+  width: 100%;
+  background-color: #2d2d2d;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px 0; /* Reduced padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #333;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 1.8rem; /* Slightly smaller font size */
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+.menu-container {
+  display: flex;
+  justify-content: center; /* Align items to the center */
+  align-items: center;
+  padding: 10px;
+  gap: 30px; /* Reduced gap between the cards */
+  flex-wrap: wrap;
+}
+
+.game-card {
+  background: #f7f7f7; /* Light grey background for a soft look */
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
+  width: 260px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.4s;
+  cursor: pointer;
+}
+
+.wordle-card {
+  background: linear-gradient(135deg, #a8dadc, #f1faee); /* Soft teal gradient for Wordle */
+}
+
+.crossword-card {
+  background: linear-gradient(135deg, #ffb347, #ffe0ac); /* Light orange gradient for Crossword */
+}
+
+.game-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.game-icon {
+  max-width: 70px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.8em;
+  font-weight: 600;
+  margin: 15px 0;
+  color: #333333;
+}
+
+.buttons-container {
+  margin-top: 20px;
+}
+
+.buttons-container button {
+  display: block;
+  width: 70%;
+  margin: 0 auto;
+  padding: 10px;
+  font-size: 1em;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  color: #ffffff;
+  background-color: #333333; /* Dark button color for contrast */
+}
+
+.buttons-container button:hover {
+  background-color: #555555;
+}

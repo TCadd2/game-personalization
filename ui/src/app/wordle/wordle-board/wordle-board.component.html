@@ -1,34 +1,48 @@
-<!-- Navbar -->
-<div class="navbar">
+<div class="page-container">
+  <!-- Navbar -->
+  <div class="navbar">
     <h1>Wordle</h1>
-  </div>
-  
-  <!-- Main Content Container -->
-  <div class="main-content">
-    <div class="container">
-      <!-- Game Grid -->
-      <div class="wordle-grid">
-        <div class="row" *ngFor="let guess of guesses; let i = index">
-          <div class="cell" 
-               *ngFor="let letter of guess; let j = index"
-               [ngClass]="{'correct': colors[i][j] === 'green', 
-                           'incorrect': colors[i][j] === 'grey',
-                           'partial': colors[i][j] === 'yellow'}">
-            {{ letter }}
-          </div>
-        </div>
-      </div>
-  
-      <!-- Input box and button -->
-      <input [(ngModel)]="currentGuess" (keyup.enter)="submitGuess()" maxlength="5" />
-      <button (click)="submitGuess()">Enter</button>
-  
-      <!-- Feedback messages -->
-      <p *ngIf="gameWon">Congratulations, you've won!</p>
-      <p *ngIf="gameLost">Game Over. The correct word was: {{ correctWord }}</p>
-  
-      <!-- Restart Button -->
-      <button *ngIf="gameWon || gameLost" (click)="resetGame()">Restart Game</button>
+    <!-- Burger icon -->
+    <div class="burger-menu" (click)="goBackToMenu()">
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+
     </div>
   </div>
-  
+
+  <!-- Sidebar -->
+  <!-- <div id="sidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="goBackToMenu()">&times;</a>
+    <a routerLink="/">Back to Menu</a>
+  </div> -->
+
+  <!-- Main Content Container -->
+  <div class="main-content">
+    <!-- Game Grid -->
+    <div class="wordle-grid">
+      <div class="row" *ngFor="let row of guesses; let rowIndex = index">
+        <div class="cell"
+          *ngFor="let tile of row; let tileIndex = index"
+          [ngClass]="{'correct': colors[rowIndex][tileIndex] === 'green',
+          'incorrect': colors[rowIndex][tileIndex] === 'grey',
+          'partial': colors[rowIndex][tileIndex] === 'yellow'}">
+          {{ tile }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Input box and button -->
+    <app-keyboard (letterSelected)="addLetter($event)" 
+    (deleteSelected)="deleteLetter()" 
+    (enterSelected)="submitGuess()">
+</app-keyboard>
+
+    <!-- Feedback messages -->
+    <p *ngIf="gameWon">Congratulations, you've won!</p>
+    <p *ngIf="gameLost">Game Over. The correct word was: {{ correctWord }}</p>
+
+    <!-- Restart Button -->
+    <button *ngIf="gameWon || gameLost" (click)="goBackToMenu()">Back to Menu</button>
+  </div>
+</div>

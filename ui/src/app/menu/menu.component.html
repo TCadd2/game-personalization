@@ -1,6 +1,29 @@
-<div class="menu">
-    <h1>Select a Game</h1>
-    <button routerLink="/crossword">Crossword Game</button>
-    <button routerLink="/wordle">Wordle Game</button>
+<div class="body">
+<div class="menu-container">
+  <!-- Navbar -->
+  <div class="navbar">
+    <h1>ThemedNYTimes</h1>
+    <!-- Burger icon -->
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+      <div class="burger-line"></div>
+
   </div>
-  
+
+  <div class="game-card wordle-card" (click)="selectGame('wordle')">
+    <img src="assets/images/wordleicon.png" alt="Wordle" class="game-icon" />
+    <h2>Wordle</h2>
+    <div class="buttons-container">
+      <button (click)="selectGame('wordle')">Play</button>
+    </div>
+  </div>
+
+  <div class="game-card crossword-card" (click)="selectGame('crossword')">
+    <img src="assets/images/crosswordicon.png" alt="Crossword" class="game-icon" />
+    <h2>Crossword</h2>
+    <div class="buttons-container">
+      <button (click)="selectGame('crossword')">Play</button>
+    </div>
+  </div>
+</div>
+</div>

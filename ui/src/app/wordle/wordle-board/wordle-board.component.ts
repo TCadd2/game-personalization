@@ -1,68 +1,87 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { WordleSharedService } from '../wordle-shared.service';
+import { KeyboardComponent } from '../../keyboard/keyboard.component';
 
 @Component({
   selector: 'app-wordle-board',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, KeyboardComponent],
   templateUrl: './wordle-board.component.html',
   styleUrls: ['./wordle-board.component.css']
 })
 export class WordleBoardComponent {
-  correctWord: string = 'HELLO';  // The correct word to guess
-  guesses: string[][] = Array.from({ length: 5 }, () => Array(5).fill(''));  // 5 rows of 5 columns
-  colors: string[][] = Array.from({ length: 5 }, () => Array(5).fill(''));   // Corresponding colors for cells
-  currentGuess: string = '';  // The current guess from the input box
-  currentRow: number = 0;     // Keeps track of which row/guess the user is on
+  correctWord: string = '';  // Word to guess
+  guesses: string[][] = Array.from({ length: 5 }, () => Array(5).fill(''));
+  colors: string[][] = Array.from({ length: 5 }, () => Array(5).fill(''));
+  currentGuess: string = '';
+  currentRow: number = 0;
+  currentTile: number = 0;
   gameWon: boolean = false;
   gameLost: boolean = false;
 
-  submitGuess() {
-    if (this.currentGuess.length !== 5 || this.currentRow >= 5 || this.gameWon || this.gameLost) {
-      return;  // Guess must be exactly 5 letters, and game must still be ongoing
-    }
+  constructor(private router: Router, private wordleSharedService: WordleSharedService) {}
 
-    // Fill the guess in the appropriate row
-    this.guesses[this.currentRow] = this.currentGuess.toUpperCase().split('');
+  ngOnInit() {
+    const topic = 'WORDS';  // Example topic for wordle
 
-    // Check each letter and color accordingly
-    this.checkGuess();
-    
-    // Check if the user has won or lost
-    if (this.currentGuess.toUpperCase() === this.correctWord) {
-      this.gameWon = true;
-    } else if (this.currentRow === 4) {
-      this.gameLost = true;
-    }
-
-    // Move to the next row and clear the current guess
-    this.currentRow++;
-    this.currentGuess = '';
+    this.correctWord = this.wordleSharedService.getWord();
   }
 
-  checkGuess() {
+  addLetter(letter: string) {
+    if (this.currentTile < 5 && !this.gameWon && !this.gameLost) {
+      this.guesses[this.currentRow][this.currentTile] = letter;
+      this.currentTile++;
+    }
+  }
+
+  deleteLetter() {
+    if (this.currentTile > 0 && !this.gameWon && !this.gameLost) {
+      this.currentTile--;
+      this.guesses[this.currentRow][this.currentTile] = '';
+    }
+  }
+  submitGuess() {
+    if (this.currentTile === 5) {
+      const guess = this.guesses[this.currentRow].join('').toUpperCase();
+      
+      if (guess === this.correctWord) {
+        this.gameWon = true;
+      } else if (this.currentRow === 4) {
+        this.gameLost = true;
+      }
+
+      this.checkGuess(guess);
+      this.currentRow++;
+      this.currentTile = 0;
+    }
+  }
+
+  checkGuess(guess: string) {
     for (let i = 0; i < 5; i++) {
-      if (this.currentGuess[i].toUpperCase() === this.correctWord[i]) {
-        // Correct letter in the correct position
+      if (guess[i] === this.correctWord[i]) {
         this.colors[this.currentRow][i] = 'green';
-      } else if (this.correctWord.includes(this.currentGuess[i].toUpperCase())) {
-        // Letter exists in the word, but wrong position
+      } else if (this.correctWord.includes(guess[i])) {
         this.colors[this.currentRow][i] = 'yellow';
       } else {
-        // Letter does not exist in the word
         this.colors[this.currentRow][i] = 'grey';
       }
     }
   }
 
   resetGame() {
-    this.correctWord = 'HELLO';  // Optionally pick a new word
+    this.correctWord = 'HELLO'; // Set a new word
     this.guesses = Array.from({ length: 5 }, () => Array(5).fill(''));
     this.colors = Array.from({ length: 5 }, () => Array(5).fill(''));
-    this.currentGuess = '';
     this.currentRow = 0;
+    this.currentTile = 0;
     this.gameWon = false;
     this.gameLost = false;
+  }
+
+  goBackToMenu() {
+    this.router.navigate(['/']); // Navigate to the main menu (adjust the route as needed)
   }
 }

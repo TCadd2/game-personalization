@@ -1,145 +1,127 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, Renderer2 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { KeyboardComponent } from '../../keyboard/keyboard.component';
+import { WordleSharedService } from '../../wordle/wordle-shared.service';
 
 @Component({
   selector: 'app-crossword-grid',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, KeyboardComponent],
   templateUrl: './crossword-grid.component.html',
   styleUrls: ['./crossword-grid.component.css']
 })
 export class CrosswordGridComponent {
-  grid: { letter: string, correct: string, editable: boolean, isIncorrect: boolean, isUnused: boolean }[][] = [];
-  words: { word: string, direction: 'H' | 'V' }[] = [
-    { word: 'PROGRAM', direction: 'H' },
-    { word: 'DEBUG', direction: 'V' },
-    { word: 'CODE', direction: 'H' },
-    { word: 'SCRIPT', direction: 'V' },
-    { word: 'BUILD', direction: 'H' }
-  ];
-  private correctAnswers: string[][] = Array.from({ length: 10 }, () => Array(10).fill(''));
+  grid: string[][] = [];
+  correctGrid: string[][] = [];
+  colors: string[][] = [];
+  hints: string[] = [];
+  words: string[] = [];
+  commonLetter: string = '';
+  activeRow: number = 0;
+  activeCol: number = 0;
+  wordPositions: string[] = []
 
-  constructor() {
-    this.initializeGrid();
-    this.generateCrossword(this.words);
-  }
+  constructor(private wordleService: WordleSharedService, private renderer: Renderer2, private elRef: ElementRef) {}
 
-  initializeGrid() {
-    this.grid = Array.from({ length: 10 }, () =>
-      Array.from({ length: 10 }, () => ({
-        letter: '',
-        correct: '',
-        editable: false,
-        isIncorrect: false,
-        isUnused: true
-      }))
+  async ngOnInit() {
+    // Fetch crossword data
+    this.hints = await this.wordleService.getWordsAndHints().hints;
+    this.words = await this.wordleService.getWordsAndHints().words;
+    this.commonLetter = await this.wordleService.getWordsAndHints().commonLetter[0][0];
+    const maxWordLength = Math.max(...this.words.map(word => word.length));
+    this.adjustGridSize(maxWordLength); // Adjust the grid size dynamically
+
+    // Generate the correct grid dynamically based on the largest word length
+    this.correctGrid = Array.from({ length: maxWordLength }, () =>
+      Array(maxWordLength).fill('*') // Create a grid with maxWordLength x maxWordLength size
     );
+    this.populateCorrectGrid();
+
+    // Initialize user grid and color states
+    this.grid = Array.from({ length: maxWordLength }, (_, rowIndex) =>
+      this.correctGrid[rowIndex].map(cell => (cell === '*' ? '*' : ''))
+    );
+    
+    this.colors = this.generateEmptyGrid(maxWordLength, maxWordLength);
+    this.hints = this.hints.map((hint, index) => {
+      return `${hint} (${this.wordPositions[index]})`;
+    });
   }
 
-  generateCrossword(words: { word: string, direction: 'H' | 'V' }[]) {
-    this.initializeGrid();
+  adjustGridSize(maxWordLength: number) {
+    const crosswordGrid = this.elRef.nativeElement.querySelector('.crossword-grid');  }
 
-    // Place the first word horizontally at the top-left corner
-    const firstWord = words.shift();
-    if (firstWord) {
-      this.placeWordInGrid(firstWord.word, 0, 0, 'H');
-    }
-
-    // Place remaining words
-    for (const { word, direction } of words) {
-      let placed = false;
-
-      for (let row = 0; row < 10 && !placed; row++) {
-        for (let col = 0; col < 10 && !placed; col++) {
-          if (this.canPlaceWord(word, row, col, direction)) {
-            this.placeWordInGrid(word, row, col, direction);
-            placed = true;
-          }
+  populateCorrectGrid() {
+    for (let i = 0; i < 2; i++) {
+      if (i === 0) {
+        let position = this.findLetterPosition(this.commonLetter, this.words[i + 1]);
+        this.wordPositions[0] = `Row: ${position+1}, Column 1`; 
+        for (let j = 0; j < this.words[i].length; j++) {
+          this.correctGrid[j][position] = this.words[i][j].toUpperCase();
         }
       }
-
-      // Log a message if the word could not be placed
-      if (!placed) {
-        console.warn(`Could not place word: ${word}`);
-      }
-    }
-
-    this.updateGrid();
-  }
-
-  canPlaceWord(word: string, startRow: number, startCol: number, direction: 'H' | 'V'): boolean {
-    const length = word.length;
-    const gridSize = 10;
-
-    if (direction === 'H') {
-      if (startCol + length > gridSize) return false;
-
-      for (let i = 0; i < length; i++) {
-        const cell = this.correctAnswers[startRow][startCol + i];
-        if (cell !== '' && cell !== word[i]) return false;
-      }
-
-      return true;
-    } else {
-      if (startRow + length > gridSize) return false;
-
-      for (let i = 0; i < length; i++) {
-        const cell = this.correctAnswers[startRow + i][startCol];
-        if (cell !== '' && cell !== word[i]) return false;
-      }
-
-      return true;
-    }
-  }
-
-  placeWordInGrid(word: string, startRow: number, startCol: number, direction: 'H' | 'V') {
-    for (let i = 0; i < word.length; i++) {
-      if (direction === 'H') {
-        this.correctAnswers[startRow][startCol + i] = word[i];
-      } else {
-        this.correctAnswers[startRow + i][startCol] = word[i];
-      }
-    }
-
-    this.updateGrid(); // Update the grid after placing the word
-  }
-
-  updateGrid() {
-    for (let row = 0; row < 10; row++) {
-      for (let col = 0; col < 10; col++) {
-        const correctLetter = this.correctAnswers[row][col];
-        const currentLetter = this.grid[row][col].letter;
-
-        this.grid[row][col] = {
-          letter: currentLetter,
-          correct: correctLetter || '',
-          editable: correctLetter === '' || (currentLetter === '' && !this.grid[row][col].isUnused),
-          isIncorrect: (currentLetter.toUpperCase() !== correctLetter.toUpperCase()) && currentLetter !== '',
-          isUnused: !correctLetter
-        };
-
-        if (correctLetter !== '') {
-          this.grid[row][col].editable = false;
+      if (i === 1) {
+        let position = this.findLetterPosition(this.commonLetter, this.words[i - 1]);
+        this.wordPositions[1] = `Row: 1, Column ${position+1}`; 
+        for (let j = 0; j < this.words[i].length; j++) {
+          this.correctGrid[position][j] = this.words[i][j].toUpperCase();
         }
       }
     }
   }
 
-  checkAnswer(row: number, col: number) {
-    const cell = this.grid[row][col];
-    if (cell.letter.toUpperCase() !== cell.correct.toUpperCase()) {
-      cell.isIncorrect = true;
-    } else {
-      cell.isIncorrect = false;
+  findLetterPosition(letter: string, word: string): number {
+    return word.indexOf(letter);
+  }
+
+  generateEmptyGrid(rows: number, cols: number): string[][] {
+    return Array.from({ length: rows }, () => Array(cols).fill(''));
+  }
+
+  selectCell(row: number, col: number) {
+    // Reset previously selected cell
+    this.activeRow = row;
+    this.activeCol = col;
+  }
+
+  addLetter(letter: string) {
+    if (this.grid[this.activeRow][this.activeCol] !== '*') {
+      this.grid[this.activeRow][this.activeCol] = letter.toUpperCase();
+      this.checkLetter();
+      this.moveToNextCell();
     }
   }
 
-  onInput(event: Event, row: number, col: number) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value.toUpperCase();
+  deleteLetter() {
+    if (this.grid[this.activeRow][this.activeCol] !== '*') {
+      this.grid[this.activeRow][this.activeCol] = '';
+    }
+  }
 
-    this.grid[row][col].letter = value;
-    this.checkAnswer(row, col);
+  moveToNextCell() {
+    if (this.activeCol < this.grid[0].length - 1) {
+      this.activeCol++;
+    } else if (this.activeRow < this.grid.length - 1) {
+      this.activeRow++;
+      this.activeCol = 0;
+    }
+  }
+  checkLetter() {
+    const enteredLetter = this.grid[this.activeRow][this.activeCol];
+    const correctLetter = this.correctGrid[this.activeRow][this.activeCol]; // Use correctGrid to get the solution
+
+    if (enteredLetter === correctLetter) {
+        // Reveal the correct letter in the displayed grid
+        this.grid[this.activeRow][this.activeCol] = correctLetter; 
+        this.colors[this.activeRow][this.activeCol] = 'green';  // Mark as correct
+    } else {
+        this.colors[this.activeRow][this.activeCol] = 'grey';  // Mark as incorrect
+    }
+}
+
+
+  enterGuess() {
+    this.moveToNextCell();
   }
 }

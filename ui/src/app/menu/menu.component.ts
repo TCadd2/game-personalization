@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { WordleSharedService } from '../wordle/wordle-shared.service';
 
 @Component({
   selector: 'app-menu',
@@ -8,4 +9,14 @@ import { RouterModule } from '@angular/router';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
-export class MenuComponent {}
+export class MenuComponent {
+
+  constructor(private router: Router, private wordleSharedService: WordleSharedService) {}
+
+  // Method to handle game selection and navigation
+  selectGame(game: string) {
+    this.wordleSharedService.setSelectedGame(game);  // Set the selected game
+    this.router.navigate(['/topic-selection']);  // Navigate to topic selection for Wordle
+ 
+  }
+}

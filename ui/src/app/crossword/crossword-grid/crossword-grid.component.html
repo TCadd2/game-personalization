@@ -1,21 +1,38 @@
-<div class="crossword-grid">
+<div class="crossword-container">
+    <!-- Navbar -->
+    <div class="navbar">
+      <h1>Crossword</h1>
+      <!-- Burger icon -->
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+        <div class="burger-line"></div>
+  
+    </div>
+  
+  <div class="crossword-grid">
     <div *ngFor="let row of grid; let rowIndex = index">
-      <div *ngFor="let cell of row; let colIndex = index" 
-           [ngClass]="{
-             'cell': true,
-             'incorrect': cell.isIncorrect,
-             'unused': !cell.editable
-           }">
-        <input *ngIf="cell.editable"
-               type="text"
-               maxlength="1"
-               [(ngModel)]="cell.letter"
-               (input)="onInput($event, rowIndex, colIndex)"
-               [ngClass]="{ 'editable': cell.editable }"/>
-        <div *ngIf="!cell.editable" class="cell-content">
-          {{ cell.letter }}
-        </div>
+      <div class="cell"
+        *ngFor="let tile of row; let colIndex = index"
+        [ngClass]="{
+          'green': colors[rowIndex][colIndex] === 'green',
+          'grey': colors[rowIndex][colIndex] === 'grey',
+          'blacked-out': tile === '*',
+          'active': activeRow === rowIndex && activeCol === colIndex
+        }"
+        (click)="selectCell(rowIndex, colIndex)">
+        {{ tile !== '*' ? tile : '' }}
       </div>
     </div>
   </div>
   
+
+  <div class="crossword-hints">
+    <h3>Hints</h3>
+    <ul>
+      <li *ngFor="let hint of hints">{{ hint }}</li>
+    </ul>
+  </div>
+
+  <app-keyboard (letterSelected)="addLetter($event)" (deleteSelected)="deleteLetter()" (enterSelected)="enterGuess()">
+  </app-keyboard>
+</div>
